@@ -17,19 +17,10 @@
 
 # [START postgres_operator_howto_guide]
 import datetime
-import logging
 from os import getenv
 from airflow import DAG
 from airflow.providers.postgres.operators.postgres import PostgresOperator
-# from s3_to_postgres import S3ToPostgresOperator
 
-logging.info('Defining variables')
-
-S3_BUCKET = getenv("S3_USER_PURCHASE_BUCKET", "de-bootcamp-userpurchase-local")
-S3_KEY = getenv("S3_USER_PURCHASE_KEY", "user_purchase_sample.csv")
-POSTGRES_TABLE = getenv("USER_PURCHASE_TABLE", "user_purchase")
-
-logging.info('Variables defined')
 
 with DAG(
     dag_id="postgres_operator_dag",
@@ -58,18 +49,5 @@ with DAG(
             )
         ;"""        
     )
-
-    # transfer_s3_to_postgres = S3ToPostgresOperator(
-    #     task_id='transfer_s3_to_postgres',
-    #     s3_bucket=S3_BUCKET,
-    #     s3_key=S3_KEY,
-    #     schema="movies",
-    #     table=POSTGRES_TABLE,
-    #     copy_options=['csv']        
-    # )
-
-        
-
-    # create_movies_schema >> create_user_purchase_table >> transfer_s3_to_postgres
 
     create_movies_schema >> create_user_purchase_table
