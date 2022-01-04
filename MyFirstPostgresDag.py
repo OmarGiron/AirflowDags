@@ -17,17 +17,19 @@
 
 # [START postgres_operator_howto_guide]
 import datetime
+import logging
 from os import getenv
 from airflow import DAG
 from airflow.providers.postgres.operators.postgres import PostgresOperator
 from s3_to_postgres import S3ToPostgresOperator
 
+logging.info('Defining variables')
 
 S3_BUCKET = getenv("S3_USER_PURCHASE_BUCKET", "de-bootcamp-userpurchase-local")
 S3_KEY = getenv("S3_USER_PURCHASE_KEY", "user_purchase_sample.csv")
 POSTGRES_TABLE = getenv("USER_PURCHASE_TABLE", "user_purchase")
 
-
+logging.info('Variables defined')
 
 with DAG(
     dag_id="postgres_operator_dag",
