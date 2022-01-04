@@ -17,11 +17,17 @@
 
 # [START postgres_operator_howto_guide]
 import datetime
-
+from os import getenv
 from airflow import DAG
 from airflow.providers.postgres.operators.postgres import PostgresOperator
+from s3_to_postgres import S3ToPostgresOperator
 
-# create_movies_schema, create_user_purchase_table
+
+S3_BUCKET = getenv("S3_USER_PURCHASE_BUCKET", "de-bootcamp-userpurchase-local")
+S3_KEY = getenv("S3_USER_PURCHASE_KEY", "user_purchase_sample.csv")
+POSTGRES_TABLE = getenv("USER_PURCHASE_TABLE", "user_purchase")
+
+
 
 with DAG(
     dag_id="postgres_operator_dag",
@@ -31,8 +37,7 @@ with DAG(
 ) as dag:
     create_movies_schema = PostgresOperator(
         task_id="create_movies_schema",
-        sql="CREATE SCHEMA IF NOT EXISTS  movies;",
-        postgres_conn_id = "postgres_test"
+        sql="CREATE SCHEMA IF NOT EXISTS  movies;"        
     )
 
     
@@ -49,10 +54,19 @@ with DAG(
             customer_id int,
             country varchar(20)
             )
-        ;""",
-        postgres_conn_id = "postgres_test"
+        ;"""        
     )
+
+    transfer_s3_to_postgres = S3ToPostgresOperator(
+        task_id='transfer_s3_to_postgres',
+        s3_bucket=S3_BUCKET,
+        s3_key=S3_KEY,
+        schema="movies",
+        table=POSTGRES_TABLE,
+        copy_options=['csv']        
+    )
+
         
 
-    create_movies_schema >> create_user_purchase_table 
+    create_movies_schema >> create_user_purchase_table >> transfer_s3_to_postgres
   
