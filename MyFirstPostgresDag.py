@@ -21,7 +21,7 @@ import logging
 from os import getenv
 from airflow import DAG
 from airflow.providers.postgres.operators.postgres import PostgresOperator
-from s3_to_postgres import S3ToPostgresOperator
+# from s3_to_postgres import S3ToPostgresOperator
 
 logging.info('Defining variables')
 
