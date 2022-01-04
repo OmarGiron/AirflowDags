@@ -47,7 +47,9 @@ with DAG(
             unit_price numeric(8,3),
             customer_id int,
             country varchar(20)
-            );"""
+            )
+        ;"""
+    )
         
 
     create_movies_schema >> create_user_purchase_table 
