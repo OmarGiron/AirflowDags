@@ -59,16 +59,17 @@ with DAG(
         ;"""        
     )
 
-    transfer_s3_to_postgres = S3ToPostgresOperator(
-        task_id='transfer_s3_to_postgres',
-        s3_bucket=S3_BUCKET,
-        s3_key=S3_KEY,
-        schema="movies",
-        table=POSTGRES_TABLE,
-        copy_options=['csv']        
-    )
+    # transfer_s3_to_postgres = S3ToPostgresOperator(
+    #     task_id='transfer_s3_to_postgres',
+    #     s3_bucket=S3_BUCKET,
+    #     s3_key=S3_KEY,
+    #     schema="movies",
+    #     table=POSTGRES_TABLE,
+    #     copy_options=['csv']        
+    # )
 
         
 
-    create_movies_schema >> create_user_purchase_table >> transfer_s3_to_postgres
-  
+    # create_movies_schema >> create_user_purchase_table >> transfer_s3_to_postgres
+
+    create_movies_schema >> create_user_purchase_table
