@@ -31,7 +31,8 @@ with DAG(
 ) as dag:
     create_movies_schema = PostgresOperator(
         task_id="create_movies_schema",
-        sql="CREATE SCHEMA IF NOT EXISTS  movies;"
+        sql="CREATE SCHEMA IF NOT EXISTS  movies;",
+        postgres_conn_id = "postgres_test"
     )
 
     
@@ -48,7 +49,8 @@ with DAG(
             customer_id int,
             country varchar(20)
             )
-        ;"""
+        ;""",
+        postgres_conn_id = "postgres_test"
     )
         
 
