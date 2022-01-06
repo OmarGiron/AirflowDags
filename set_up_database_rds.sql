@@ -14,5 +14,5 @@ CREATE TABLE IF NOT EXISTS movies.user_purchase
 
 TRUNCATE TABLE movies.user_purchase;
 
-CREATE EXTENSION aws_s3 CASCADE;
+-- CREATE EXTENSION aws_s3 CASCADE;
 
