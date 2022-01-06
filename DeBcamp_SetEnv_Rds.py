@@ -15,6 +15,7 @@ POSTGRES_TABLE = Variable.get("POSTGRES_USER_PURCHASE_TABLE")
 POSTGRES_SCHEMA = Variable.get("POSTGRES_USER_PURCHASE_TABLE_SCHEMA")
 FILE_PATH_INPUT = Variable.get("FILE_PATH_INPUT")
 FILE_PATH_SQL = Variable.get("FILE_PATH_SQL")
+FILE_NAME_SQL = Variable.get("FILE_NAME_SQL")
 S3_ACCESS_KEY = Variable.get("S3_ACCESS_KEY")
 S3_SECRET_KEY = Variable.get("S3_SECRET_KEY")
 INPUT_FILE_NAME = FILE_PATH_INPUT + os.sep + S3_KEY
@@ -30,7 +31,7 @@ with DAG(
     # [START set_up_postgres_db]    
     set_up_postgres_db = PostgresOperator(
         task_id="set_up_postgres_db",
-        sql="set_up_database.sql"        
+        sql=FILE_NAME_SQL        
     )
     # [END set_up_postgres_db]         
 
