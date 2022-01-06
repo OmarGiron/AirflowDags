@@ -2,6 +2,7 @@ import datetime
 import logging
 import os 
 from airflow import DAG
+from airflow.configuration import SECRET_KEY
 from airflow.models import Variable
 from airflow.providers.postgres.operators.postgres import PostgresOperator
 from airflow.providers.postgres.hooks.postgres import PostgresHook
@@ -40,8 +41,8 @@ with DAG(
     def upload_from_s3_to_postgres(): 
         tablename = POSTGRES_SCHEMA + "." + POSTGRES_TABLE        
         s3_uri = "s3://"+S3_BUCKET+"/"+S3_KEY
-        sql_command = "SELECT aws_s3.table_import_from_s3('"+tablename+"', '', '(format csv)', '"+s3_uri+"', "
-        sql_command += " aws_commons.create_aws_credentials('"+S3_ACCESS_KEY+"', '"+S3_SECRET_KEY+"', '') );"
+        sql_command = "SELECT aws_s3.table_import_from_s3('"+tablename+"', '', '(format csv)', '"+S3_BUCKET+"', '"+S3_KEY+"', 'us-east-2', '"+S3_ACCESS_KEY+"', '"+SECRET_KEY+"'); "
+        # sql_command += " aws_commons.create_aws_credentials('"+S3_ACCESS_KEY+"', '"+S3_SECRET_KEY+"', '') );"
 
         pgHook = PostgresHook()        
         pgHook.run(sql_command)
