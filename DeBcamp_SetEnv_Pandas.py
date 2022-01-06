@@ -91,7 +91,7 @@ with DAG(
                                             ,delimiter=","
                                             ,header=0
                                             ,quotechar='"'
-                                            ,low_memory=True
+                                            ,low_memory=False
                                             ,dtype=schema
                                             ,parse_dates=["InvoiceDate"]                                            
                                             )
