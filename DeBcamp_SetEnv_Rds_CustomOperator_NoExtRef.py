@@ -182,7 +182,7 @@ class S3ToPostgresOperator(BaseOperator):
 
 
 with DAG(
-    dag_id="DeBcamp_SetEnv_Custom_Operator"
+    dag_id="DeBcamp_SetEnv_Custom_Operator_NoExtRef"
     ,start_date=datetime.datetime(2020, 2, 2)
     ,schedule_interval="@once"
     ,catchup=False
