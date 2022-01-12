@@ -86,11 +86,14 @@ with DAG(
         #Open Postgres Connection
         pg_hook = PostgresHook(postgres_conn_id='postgres_default')
         get_postgres_conn = PostgresHook(postgres_conn_id='postgres_default').get_conn()
+        logging.info("Conexion:")
+        logging.info(get_postgres_conn)
+        table_name = POSTGRES_SCHEMA + "." + POSTGRES_TABLE
         curr = get_postgres_conn.cursor()
         # CSV loading to table
         with open(file_path("/files/user_purchase.csv"), "r") as f:
             next(f)
-            curr.copy_from(f, 'user_purchase', sep=",")
+            curr.copy_from(f, table_name , sep=",")
             get_postgres_conn.commit()               
         
     
