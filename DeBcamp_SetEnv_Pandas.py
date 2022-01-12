@@ -117,7 +117,7 @@ with DAG(
         pgHook.insert_rows(table=table_Name
                         , rows=user_purchase_tpls
                         , target_fields=target_fields
-                        , commit_every=1000
+                        , commit_every=10000
                         , replace=False)
     
     load_user_purchase_info_from_s3_to_postgres = load_from_s3_to_postgres()
