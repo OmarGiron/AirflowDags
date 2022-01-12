@@ -41,7 +41,7 @@ def csv_to_postgres():
         get_postgres_conn.commit()
 
 with DAG(
-    dag_id="DeBcamp_SetEnv_Pandas"
+    dag_id="DeBcamp_SetEnv_Pandas_J"
     ,start_date=datetime.datetime(2020, 2, 2)
     ,schedule_interval="@once"
     ,catchup=False
