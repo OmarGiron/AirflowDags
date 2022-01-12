@@ -90,7 +90,7 @@ with DAG(
         # CSV loading to table
         with open(file_path("/files/user_purchase.csv"), "r") as f:
             next(f)
-            curr.copy_from(f, 'movies.user_purchase', sep=",")
+            curr.copy_from(f, 'user_purchase', sep=",")
             get_postgres_conn.commit()               
         
     
