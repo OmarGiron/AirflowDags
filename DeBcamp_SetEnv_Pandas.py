@@ -28,7 +28,7 @@ with DAG(
     ,schedule_interval="@once"
     ,catchup=False
     ,template_searchpath=FILE_PATH_SQL
-    ,dagrun_timeout=datetime.timedelta(minutes=5)
+    ,dagrun_timeout=datetime.timedelta(minutes=10)
 ) as dag:
 
     # [START create_movies_schema]
