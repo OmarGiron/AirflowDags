@@ -82,63 +82,19 @@ with DAG(
 
     # [START load_user_purchase_info_from_s3_to_postgres]
     @task(task_id="load_user_purchase_info_from_s3_to_postgres") 
-    def load_from_s3_to_postgres():
-        s3hook = S3Hook(aws_conn_id="s3_conn")        
-        user_purchase_data = s3hook.get_key(key=S3_KEY, bucket_name=S3_BUCKET).get()["Body"].read().decode("utf-8")
+    def csv_to_postgres():
+        #Open Postgres Connection
+        pg_hook = PostgresHook(postgres_conn_id='postgres_default')
+        get_postgres_conn = PostgresHook(postgres_conn_id='postgres_default').get_conn()
+        curr = get_postgres_conn.cursor()
+        # CSV loading to table
+        with open(file_path("/files/user_purchase.csv"), "r") as f:
+            next(f)
+            curr.copy_from(f, 'movies.user_purchase', sep=",")
+            get_postgres_conn.commit()               
         
-        #Define the datatypes of the columns to pass them to the pandas data frame
-        schema = {
-            "InvoiceNo" : "string"
-            ,"StockCode" : "string"
-            ,"Description" : "string"
-            ,"Quantity" : "Int64"
-            ,"InvoiceDate" : "object"
-            ,"UnitPrice" : "float64"
-            ,"CustomerID" : "Int64"
-            ,"Country" : "string"
-        }
-
-        # Dictionary handle for Null values in the CSV
-        replaceValuesForNulls = {            
-            "Description" : ""            
-            ,"CustomerID" : 0            
-        }
-
-        #Read the csv and store it in a pandas Data Frame
-        df_user_purchase = pandas.read_csv(filepath_or_buffer = io.StringIO(user_purchase_data)
-                                            ,delimiter=","
-                                            ,header=0
-                                            ,quotechar='"'
-                                            ,low_memory=False
-                                            ,dtype=schema
-                                            ,parse_dates=["InvoiceDate"]                                            
-                                            )
-        
-        #Replace null values
-        df_user_purchase = df_user_purchase.fillna(replaceValuesForNulls)
-        
-        #Create a list of tuples to pass it to the postgres hook 
-        user_purchase_tpls = [tuple(x) for x in df_user_purchase.to_numpy()]
-        
-        #Define the database columns
-        target_fields = ["invoice_number"
-                        ,"stock_code"
-                        ,"detail"
-                        ,"quantity"
-                        ,"invoice_date"
-                        ,"unit_price"
-                        ,"customer_id"
-                        ,"country"]
-                
-        pgHook = PostgresHook()
-        table_Name = POSTGRES_SCHEMA+"."+POSTGRES_TABLE
-        pgHook.insert_rows(table=table_Name
-                        , rows=user_purchase_tpls
-                        , target_fields=target_fields
-                        , commit_every=1000
-                        , replace=False)
     
-    load_user_purchase_info_from_s3_to_postgres = load_from_s3_to_postgres()
+    load_user_purchase_info_from_s3_to_postgres = csv_to_postgres()
     # [END load_user_purchase_info_from_s3_to_postgres]
 
     set_up_postgres_db >> load_user_purchase_info_from_s3_to_postgres
