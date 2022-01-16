@@ -10,11 +10,6 @@ from airflow.providers.postgres.hooks.postgres import PostgresHook
 from airflow.providers.amazon.aws.hooks.s3 import S3Hook 
 from airflow.decorators import task
 
-# S3_BUCKET = getenv("S3_USER_PURCHASE_BUCKET", "de-bootcamp-userpurchase-local")
-# S3_KEY = getenv("S3_USER_PURCHASE_KEY", "user_purchase.csv")
-# POSTGRES_TABLE = getenv("USER_PURCHASE_TABLE", "user_purchase")
-# POSTGRES_SCHEMA = getenv("MOVIES_SCHEMA", "movies")
-
 S3_BUCKET = Variable.get("S3_USER_PURCHASE_BUCKET")
 S3_KEY = Variable.get("S3_USER_PURCHASE_KEY")
 POSTGRES_TABLE = Variable.get("POSTGRES_USER_PURCHASE_TABLE")
@@ -29,32 +24,7 @@ with DAG(
     ,catchup=False
     ,template_searchpath=FILE_PATH_SQL
     ,dagrun_timeout=datetime.timedelta(minutes=10)
-) as dag:
-
-    # [START create_movies_schema]
-    # create_movies_schema = PostgresOperator(
-    #     task_id="create_movies_schema",
-    #     sql="CREATE SCHEMA IF NOT EXISTS  movies;"        
-    # )
-    # [END create_movies_schema]
-    
-    # [START create_user_purchase_table]
-    # create_user_purchase_table = PostgresOperator(
-    #     task_id="create_user_purchase_table",
-    #     sql= """CREATE TABLE IF NOT EXISTS movies.user_purchase 
-    #         (
-    #         invoice_number varchar(10),
-    #         stock_code varchar(20),
-    #         detail varchar(1000),
-    #         quantity int,
-    #         invoice_date timestamp,
-    #         unit_price numeric(8,3),
-    #         customer_id int,
-    #         country varchar(20)
-    #         )
-    #     ;"""        
-    # )
-    # [END create_user_purchase_table]
+) as dag:    
 
     # [START set_up_postgres_db]
     set_up_postgres_db = PostgresOperator(
@@ -117,7 +87,7 @@ with DAG(
         pgHook.insert_rows(table=table_Name
                         , rows=user_purchase_tpls
                         , target_fields=target_fields
-                        , commit_every=10000
+                        , commit_every=35000
                         , replace=False)
     
     load_user_purchase_info_from_s3_to_postgres = load_from_s3_to_postgres()
